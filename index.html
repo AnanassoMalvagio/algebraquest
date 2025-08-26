@@ -334,14 +334,20 @@
             <div class="controls">
                 <strong>🎮 CONTROLLI:</strong><br>
                 <b>WASD / Frecce:</b> Muovi il personaggio<br>
-                <b>SPAZIO:</b> Interagisci con oggetti<br><br>
+                <b>SPAZIO:</b> Interagisci con oggetti vicini<br><br>
                 
                 <strong>🎯 OBIETTIVO:</strong><br>
                 Risolvi equazioni matematiche per:<br>
-                • 🚪 Aprire porte bloccate<br>
-                • ⚔️ Sconfiggere nemici<br>
-                • 💰 Raccogliere tesori<br>
-                • 🏆 Raggiungere l'uscita!
+                • 🚪 Aprire porte bloccate (bloccano il passaggio)<br>
+                • ⚔️ Sconfiggere nemici (bloccano il passaggio)<br>
+                • 💰 Raccogliere tesori (cammina sopra)<br>
+                • 🏆 Raggiungere l'uscita (cammina sopra)<br><br>
+                
+                <strong>💡 SUGGERIMENTI:</strong><br>
+                • Porte e nemici bloccano il movimento<br>
+                • Usa SPAZIO quando sei vicino per interagire<br>
+                • I tesori si raccolgono automaticamente<br>
+                • Puoi saltare le equazioni con il mana
             </div>
             
             <div class="message-log" id="messageLog">
@@ -596,21 +602,71 @@
             // Controlla collisione con i muri
             if (gameMap[newY][newX] === CELL_TYPES.WALL) return;
             
+            // Controlla se c'è un'entità non risolta nella nuova posizione
+            const blockingEntity = entities.find(e => 
+                !e.solved && e.x === newX && e.y === newY && 
+                (e.type === CELL_TYPES.DOOR || e.type === CELL_TYPES.ENEMY)
+            );
+            
+            if (blockingEntity) {
+                // Non muovere il giocatore, ma mostra un messaggio
+                if (blockingEntity.type === CELL_TYPES.DOOR) {
+                    addMessage('🚪 La porta è bloccata! Premi SPAZIO per provare ad aprirla.', 'info');
+                } else if (blockingEntity.type === CELL_TYPES.ENEMY) {
+                    addMessage('⚔️ Un nemico blocca il passaggio! Premi SPAZIO per sfidarlo.', 'info');
+                }
+                return;
+            }
+            
             // Muovi il giocatore
             player.x = newX;
             player.y = newY;
             
-            // Controlla interazioni automatiche
-            checkInteractions();
+            // Controlla se il giocatore è su un tesoro o sull'uscita
+            const entityAtPosition = entities.find(e => 
+                !e.solved && e.x === player.x && e.y === player.y &&
+                (e.type === CELL_TYPES.TREASURE || e.type === CELL_TYPES.EXIT)
+            );
+            
+            if (entityAtPosition) {
+                // Interazione automatica solo per tesori ed uscita
+                handleEntityInteraction(entityAtPosition);
+            }
         }
         
         // Controlla interazioni con entità
         function checkInteractions() {
+            // Controlla le 4 caselle adiacenti al giocatore
+            const adjacentPositions = [
+                {x: player.x, y: player.y - 1}, // sopra
+                {x: player.x, y: player.y + 1}, // sotto
+                {x: player.x - 1, y: player.y}, // sinistra
+                {x: player.x + 1, y: player.y}, // destra
+            ];
+            
+            let interactionFound = false;
+            
             entities.forEach(entity => {
-                if (!entity.solved && entity.x === player.x && entity.y === player.y) {
-                    handleEntityInteraction(entity);
+                if (!entity.solved) {
+                    // Controlla se l'entità è in una posizione adiacente
+                    adjacentPositions.forEach(pos => {
+                        if (entity.x === pos.x && entity.y === pos.y) {
+                            handleEntityInteraction(entity);
+                            interactionFound = true;
+                        }
+                    });
+                    
+                    // Controlla anche la posizione del giocatore stesso
+                    if (entity.x === player.x && entity.y === player.y) {
+                        handleEntityInteraction(entity);
+                        interactionFound = true;
+                    }
                 }
             });
+            
+            if (!interactionFound) {
+                addMessage('🔍 Non c\'è nulla con cui interagire qui vicino.', 'info');
+            }
         }
         
         // Gestisce l'interazione con un'entità
