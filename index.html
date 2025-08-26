@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Quest</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #2c1810 0%, #8b4513 50%, #1a0f0a 100%);
+            font-family: 'Georgia', serif;
+            color: #f4e4bc;
+            overflow: hidden;
+        }
+        
+        .game-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        .game-area {
+            flex: 1;
+            position: relative;
+            background: #000;
+            border: 3px solid #8b4513;
+        }
+        
+        #gameCanvas {
+            display: block;
+            background: #1a1a1a;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: rgba(20, 10, 5, 0.9);
+            border-left: 3px solid #8b4513;
+            padding: 20px;
+            box-shadow: inset 5px 0 15px rgba(0,0,0,0.5);
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 24px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px #000;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #8b4513;
+            padding-bottom: 10px;
+        }
+        
+        .stats {
+            background: rgba(139, 69, 19, 0.3);
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        
+        .stat-value {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .health-bar, .mana-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border: 1px solid #666;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ff4444, #ff6666);
+            transition: width 0.3s;
+        }
+        
+        .mana-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4444ff, #6666ff);
+            transition: width 0.3s;
+        }
+        
+        .equation-panel {
+            background: rgba(0, 0, 50, 0.8);
+            border: 2px solid #4169e1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            display: none;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(65, 105, 225, 0.5);
+        }
+        
+        .equation-text {
+            font-size: 24px;
+            color: #87ceeb;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .answer-input {
+            width: 80px;
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            border: 2px solid #4169e1;
+            border-radius: 5px;
+            background: #001122;
+            color: #fff;
+            margin: 10px 5px;
+        }
+        
+        .submit-btn {
+            background: #4169e1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #5a7bd4;
+            transform: scale(1.05);
+        }
+        
+        .controls {
+            background: rgba(139, 69, 19, 0.3);
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .message-log {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #666;
+            border-radius: 10px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .message.success {
+            background: rgba(0, 255, 0, 0.2);
+            color: #90ee90;
+        }
+        
+        .message.error {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ffcccb;
+        }
+        
+        .message.info {
+            background: rgba(0, 0, 255, 0.2);
+            color: #add8e6;
+        }
+        
+        .victory-screen, .game-over-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .victory-screen h2 {
+            color: #ffd700;
+            font-size: 32px;
+            margin-top: 0;
+        }
+        
+        .game-over-screen h2 {
+            color: #ff4444;
+            font-size: 32px;
+            margin-top: 0;
+        }
+        
+        .restart-btn {
+            background: #8b4513;
+            color: #f4e4bc;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .restart-btn:hover {
+            background: #a0522d;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-area">
+            <canvas id="gameCanvas" width="600" height="600"></canvas>
+        </div>
+        
+        <div class="sidebar">
+            <div class="title">🏰 ALGEBRA QUEST</div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <span>Livello:</span>
+                    <span class="stat-value" id="level">1</span>
+                </div>
+                <div class="stat-item">
+                    <span>Punti Exp:</span>
+                    <span class="stat-value" id="exp">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Stanza:</span>
+                    <span class="stat-value" id="room">1</span>
+                </div>
+                
+                <div style="margin: 10px 0;">
+                    <div>Salute: <span id="healthText">100/100</span></div>
+                    <div class="health-bar">
+                        <div class="health-fill" id="healthFill" style="width: 100%"></div>
+                    </div>
+                </div>
+                
+                <div style="margin: 10px 0;">
+                    <div>Mana: <span id="manaText">50/50</span></div>
+                    <div class="mana-bar">
+                        <div class="mana-fill" id="manaFill" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="equation-panel" id="equationPanel">
+                <h3 style="color: #87ceeb; margin-top: 0;">🧮 Risolvi l'Equazione!</h3>
+                <div class="equation-text" id="equationText">2x + 5 = 13</div>
+                <div>
+                    <span style="color: #87ceeb;">x = </span>
+                    <input type="number" class="answer-input" id="answerInput" placeholder="?">
+                </div>
+                <button class="submit-btn" onclick="checkAnswer()">Risolvi</button>
+                <button class="submit-btn" onclick="skipEquation()" style="background: #666;">Salta (-10 Mana)</button>
+            </div>
+            
+            <div class="controls">
+                <strong>🎮 Controlli:</strong><br>
+                WASD / Frecce: Muovi<br>
+                SPAZIO: Interagisci<br><br>
+                
+                <strong>🎯 Obiettivo:</strong><br>
+                Risolvi equazioni per:<br>
+                • Aprire porte 🚪<br>
+                • Sconfiggere nemici ⚔️<br>
+                • Trovare tesori 💰<br>
+                • Raggiungere l'uscita 🏆
+            </div>
+            
+            <div class="message-log" id="messageLog">
+                <div class="message info">🌟 Benvenuto in Algebra Quest!</div>
+                <div class="message info">🚪 Trova le porte blu e risolvile!</div>
+                <div class="message info">⚔️ I nemici rossi ti sfideranno!</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="victory-screen" id="victoryScreen">
+        <h2>🏆 VITTORIA!</h2>
+        <div style="font-size: 20px; margin: 20px 0;">
+            Hai completato il dungeon!<br>
+            Livello finale: <span id="finalLevel" style="color: #ffd700;">1</span><br>
+            Esperienza totale: <span id="finalExp" style="color: #ffd700;">0</span>
+        </div>
+        <button class="restart-btn" onclick="restartGame()">Nuova Avventura</button>
+    </div>
+    
+    <div class="game-over-screen" id="gameOverScreen">
+        <h2>💀 GAME OVER</h2>
+        <div style="font-size: 18px; margin: 20px 0;">
+            Hai esaurito la salute!<br>
+            La matematica ha avuto la meglio...
+        </div>
+        <button class="restart-btn" onclick="restartGame()">Riprova</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Costanti
+        const TILE_SIZE = 30;
+        const MAP_WIDTH = 20;
+        const MAP_HEIGHT = 20;
+        
+        // Tipi di celle
+        const CELL_TYPES = {
+            WALL: 0,
+            FLOOR: 1,
+            DOOR: 2,
+            ENEMY: 3,
+            TREASURE: 4,
+            EXIT: 5,
+            PLAYER: 6
+        };
+        
+        // Stato del gioco
+        let player = {
+            x: 1,
+            y: 1,
+            health: 100,
+            maxHealth: 100,
+            mana: 50,
+            maxMana: 50,
+            level: 1,
+            exp: 0,
+            expToNext: 100
+        };
+        
+        let gameState = {
+            currentRoom: 1,
+            maxRoom: 1,
+            currentEquation: null,
+            awaitingAnswer: false,
+            gameRunning: true
+        };
+        
+        let gameMap = [];
+        let entities = [];
+        
+        // Generatori di equazioni
+        const equationTypes = [
+            // Equazioni lineari semplici
+            () => {
+                const a = Math.floor(Math.random() * 10) + 1;
+                const b = Math.floor(Math.random() * 20) + 1;
+                const x = Math.floor(Math.random() * 10) + 1;
+                const result = a * x + b;
+                return {
+                    text: `${a}x + ${b} = ${result}`,
+                    answer: x,
+                    difficulty: 1
+                };
+            },
+            // Equazioni con sottrazione
+            () => {
+                const a = Math.floor(Math.random() * 10) + 2;
+                const b = Math.floor(Math.random() * 15) + 5;
+                const x = Math.floor(Math.random() * 8) + 2;
+                const result = a * x - b;
+                return {
+                    text: `${a}x - ${b} = ${result}`,
+                    answer: x,
+                    difficulty: 2
+                };
+            },
+            // Equazioni con divisione
+            () => {
+                const x = Math.floor(Math.random() * 12) + 3;
+                const a = Math.floor(Math.random() * 6) + 2;
+                const b = Math.floor(Math.random() * 20) + 1;
+                const result = x / a + b;
+                return {
+                    text: `x/${a} + ${b} = ${result}`,
+                    answer: x,
+                    difficulty: 3
+                };
+            },
+            // Equazioni quadratiche semplici
+            () => {
+                const x = Math.floor(Math.random() * 5) + 2;
+                const result = x * x;
+                return {
+                    text: `x² = ${result}`,
+                    answer: x,
+                    difficulty: 4
+                };
+            }
+        ];
+        
+        // Genera mappa
+        function generateMap() {
+            gameMap = [];
+            entities = [];
+            
+            // Inizializza con muri
+            for (let y = 0; y < MAP_HEIGHT; y++) {
+                gameMap[y] = [];
+                for (let x = 0; x < MAP_WIDTH; x++) {
+                    gameMap[y][x] = CELL_TYPES.WALL;
+                }
+            }
+            
+            // Crea stanze e corridoi
+            createRooms();
+            
+            // Posiziona player
+            player.x = 1;
+            player.y = 1;
+            gameMap[1][1] = CELL_TYPES.FLOOR;
+            
+            // Aggiungi entità
+            addEntities();
+        }
+        
+        function createRooms() {
+            // Algoritmo semplificato per creare un labirinto
+            const rooms = [
+                {x: 1, y: 1, w: 6, h: 6},
+                {x: 10, y: 1, w: 8, h: 5},
+                {x: 1, y: 10, w: 5, h: 8},
+                {x: 12, y: 8, w: 6, h: 10},
+                {x: 8, y: 15, w: 4, h: 4}
+            ];
+            
+            // Crea stanze
+            rooms.forEach(room => {
+                for (let y = room.y; y < room.y + room.h; y++) {
+                    for (let x = room.x; x < room.x + room.w; x++) {
+                        if (x < MAP_WIDTH && y < MAP_HEIGHT) {
+                            gameMap[y][x] = CELL_TYPES.FLOOR;
+                        }
+                    }
+                }
+            });
+            
+            // Crea corridoi
+            createCorridor(7, 3, 10, 3);
+            createCorridor(3, 7, 3, 10);
+            createCorridor(6, 13, 12, 13);
+            createCorridor(14, 6, 14, 8);
+        }
+        
+        function createCorridor(x1, y1, x2, y2) {
+            const dx = x2 > x1 ? 1 : -1;
+            const dy = y2 > y1 ? 1 : -1;
+            
+            let x = x1, y = y1;
+            while (x !== x2 || y !== y2) {
+                if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT) {
+                    gameMap[y][x] = CELL_TYPES.FLOOR;
+                }
+                if (x !== x2) x += dx;
+                if (y !== y2) y += dy;
+            }
+        }
+        
+        function addEntities() {
+            const positions = [
+                {x: 15, y: 3, type: CELL_TYPES.DOOR},
+                {x: 3, y: 15, type: CELL_TYPES.ENEMY},
+                {x: 14, y: 15, type: CELL_TYPES.TREASURE},
+                {x: 16, y: 16, type: CELL_TYPES.EXIT},
+                {x: 5, y: 5, type: CELL_TYPES.DOOR},
+                {x: 12, y: 12, type: CELL_TYPES.ENEMY}
+            ];
+            
+            positions.forEach(pos => {
+                if (gameMap[pos.y] && gameMap[pos.y][pos.x] === CELL_TYPES.FLOOR) {
+                    entities.push({
+                        x: pos.x,
+                        y: pos.y,
+                        type: pos.type,
+                        solved: false
+                    });
+                }
+            });
+        }
+        
+        // Genera equazione basata sul livello
+        function generateEquation() {
+            const maxType = Math.min(player.level - 1, equationTypes.length - 1);
+            const typeIndex = Math.floor(Math.random() * (maxType + 1));
+            return equationTypes[typeIndex]();
+        }
+        
+        // Movimento del player
+        function movePlayer(dx, dy) {
+            if (!gameState.gameRunning || gameState.awaitingAnswer) return;
+            
+            const newX = player.x + dx;
+            const newY = player.y + dy;
+            
+            // Controllo limiti
+            if (newX < 0 || newX >= MAP_WIDTH || newY < 0 || newY >= MAP_HEIGHT) {
+                return;
+            }
+            
+            // Controllo muri
+            if (gameMap[newY][newX] === CELL_TYPES.WALL) {
+                return;
+            }
+            
+            // Muovi player
+            player.x = newX;
+            player.y = newY;
+            
+            // Controlla interazioni
+            checkInteractions();
+        }
+        
+        function checkInteractions() {
+            const entity = entities.find(e => e.x === player.x && e.y === player.y && !e.solved);
+            
+            if (entity) {
+                handleEntityInteraction(entity);
+            }
+        }
+        
+        function handleEntityInteraction(entity) {
+            switch (entity.type) {
+                case CELL_TYPES.DOOR:
+                    addMessage('🚪 Porta bloccata! Risolvi l\'equazione per aprirla.', 'info');
+                    showEquation('door', entity);
+                    break;
+                case CELL_TYPES.ENEMY:
+                    addMessage('⚔️ Nemico! Sconfiggilo risolvendo l\'equazione!', 'info');
+                    showEquation('enemy', entity);
+                    break;
+                case CELL_TYPES.TREASURE:
+                    addMessage('💰 Tesoro! Risolvi per ottenerlo!', 'info');
+                    showEquation('treasure', entity);
+                    break;
+                case CELL_TYPES.EXIT:
+                    addMessage('🏆 Uscita trovata! Un\'ultima sfida!', 'info');
+                    showEquation('exit', entity);
+                    break;
+            }
+        }
+        
+        function showEquation(type, entity) {
+            gameState.currentEquation = {
+                ...generateEquation(),
+                type: type,
+                entity: entity
+            };
+            
+            document.getElementById('equationText').textContent = gameState.currentEquation.text;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('equationPanel').style.display = 'block';
+            document.getElementById('answerInput').focus();
+            
+            gameState.awaitingAnswer = true;
+        }
+        
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answerInput').value);
+            const correctAnswer = gameState.currentEquation.answer;
+            
+            if (userAnswer === correctAnswer) {
+                handleCorrectAnswer();
+            } else {
+                handleWrongAnswer();
+            }
+        }
+        
+        function handleCorrectAnswer() {
+            const eq = gameState.currentEquation;
+            eq.entity.solved = true;
+            
+            // Premi basati sul tipo e difficoltà
+            const baseExp = eq.difficulty * 20;
+            const bonusExp = eq.type === 'exit' ? 100 : 0;
+            
+            player.exp += baseExp + bonusExp;
+            
+            // Effetti specifici per tipo
+            switch (eq.type) {
+                case 'door':
+                    addMessage('✅ Porta aperta! +' + baseExp + ' EXP', 'success');
+                    break;
+                case 'enemy':
+                    addMessage('⚔️ Nemico sconfitto! +' + baseExp + ' EXP', 'success');
+                    player.mana = Math.min(player.maxMana, player.mana + 10);
+                    break;
+                case 'treasure':
+                    addMessage('💰 Tesoro ottenuto! +' + baseExp + ' EXP +20 Salute', 'success');
+                    player.health = Math.min(player.maxHealth, player.health + 20);
+                    break;
+                case 'exit':
+                    addMessage('🏆 Livello completato! +' + (baseExp + bonusExp) + ' EXP', 'success');
+                    setTimeout(() => showVictory(), 1000);
+                    break;
+            }
+            
+            checkLevelUp();
+            hideEquation();
+        }
+        
+        function handleWrongAnswer() {
+            addMessage('❌ Risposta sbagliata! -5 Salute', 'error');
+            player.health -= 5;
+            
+            if (player.health <= 0) {
+                gameOver();
+            }
+        }
+        
+        function skipEquation() {
+            if (player.mana >= 10) {
+                player.mana -= 10;
+                addMessage('⏭️ Equazione saltata. -10 Mana', 'info');
+                hideEquation();
+            } else {
+                addMessage('❌ Mana insufficiente per saltare!', 'error');
+            }
+        }
+        
+        function hideEquation() {
+            document.getElementById('equationPanel').style.display = 'none';
+            gameState.awaitingAnswer = false;
+            gameState.currentEquation = null;
+        }
+        
+        function checkLevelUp() {
+            if (player.exp >= player.expToNext) {
+                player.level++;
+                player.exp = 0;
+                player.expToNext += 50;
+                player.maxHealth += 20;
+                player.maxMana += 10;
+                player.health = player.maxHealth;
+                player.mana = player.maxMana;
+                
+                addMessage(`🆙 LEVEL UP! Livello ${player.level}!`, 'success');
+            }
+        }
+        
+        function addMessage(text, type = 'info') {
+            const log = document.getElementById('messageLog');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            log.appendChild(message);
+            log.scrollTop = log.scrollHeight;
+            
+            // Rimuovi messaggi vecchi se troppi
+            if (log.children.length > 20) {
+                log.removeChild(log.firstChild);
+            }
+        }
+        
+        function updateUI() {
+            document.getElementById('level').textContent = player.level;
+            document.getElementById('exp').textContent = `${player.exp}/${player.expToNext}`;
+            document.getElementById('room').textContent = gameState.currentRoom;
+            document.getElementById('healthText').textContent = `${player.health}/${player.maxHealth}`;
+            document.getElementById('manaText').textContent = `${player.mana}/${player.maxMana}`;
+            
+            document.getElementById('healthFill').style.width = `${(player.health / player.maxHealth) * 100}%`;
+            document.getElementById('manaFill').style.width = `${(player.mana / player.maxMana) * 100}%`;
+        }
+        
+        // Rendering
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Calcola offset per centrare il player
+            const offsetX = canvas.width / 2 - player.x * TILE_SIZE - TILE_SIZE / 2;
+            const offsetY = canvas.height / 2 - player.y * TILE_SIZE - TILE_SIZE / 2;
+            
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            
+            // Disegna mappa
+            for (let y = 0; y < MAP_HEIGHT; y++) {
+                for (let x = 0; x < MAP_WIDTH; x++) {
+                    const cellType = gameMap[y][x];
+                    drawCell(x * TILE_SIZE, y * TILE_SIZE, cellType);
+                }
+            }
+            
+            // Disegna entità
+            entities.forEach(entity => {
+                if (!entity.solved) {
+                    drawEntity(entity.x * TILE_SIZE, entity.y * TILE_SIZE, entity.type);
+                }
+            });
+            
+            // Disegna player
+            drawPlayer(player.x * TILE_SIZE, player.y * TILE_SIZE);
+            
+            ctx.restore();
+        }
+        
+        function drawCell(x, y, type) {
+            switch (type) {
+                case CELL_TYPES.WALL:
+                    ctx.fillStyle = '#4a4a4a';
+                    ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                    ctx.strokeStyle = '#666';
+                    ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+                    break;
+                case CELL_TYPES.FLOOR:
+                    ctx.fillStyle = '#2a2a2a';
+                    ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                    break;
+            }
+        }
+        
+        function drawEntity(x, y, type) {
+            // Sfondo floor
+            ctx.fillStyle = '#2a2a2a';
+            ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+            
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '20px Arial';
+            
+            switch (type) {
+                case CELL_TYPES.DOOR:
+                    ctx.fillStyle = '#4169e1';
+                    ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText('🚪', x + TILE_SIZE/2, y + TILE_SIZE/2);
+                    break;
+                case CELL_TYPES.ENEMY:
+                    ctx.fillStyle = '#dc143c';
+                    ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText('⚔️', x + TILE_SIZE/2, y + TILE_SIZE/2);
+                    break;
+                case CELL_TYPES.TREASURE:
+                    ctx.fillStyle = '#ffd700';
+                    ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+                    ctx.fillStyle = '#000';
+                    ctx.fillText('💰', x + TILE_SIZE/2, y + TILE_SIZE/2);
+                    break;
+                case CELL_TYPES.EXIT:
+                    ctx.fillStyle = '#32cd32';
+                    ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText('🏆', x + TILE_SIZE/2, y + TILE_SIZE/2);
+                    break;
+            }
+        }
+        
+        function drawPlayer(x, y) {
+            // Cerchio per il player
+            ctx.fillStyle = '#00ffff';
+            ctx.beginPath();
+            ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE/2 - 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Simbolo player
+            ctx.fillStyle = '#000';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('👤', x + TILE_SIZE/2, y + TILE_SIZE/2);
+        }
+        
+        // Controlli
+        document.addEventListener('keydown', (e) => {
+            if (gameState.awaitingAnswer && e.code === 'Enter') {
+                checkAnswer();
+                return;
+            }
+            
+            if (gameState.awaitingAnswer) return;
+            
+            switch (e.code) {
+                case 'KeyW':
+                case 'ArrowUp':
+                    movePlayer(0, -1);
+                    break;
+                case 'KeyS':
+                case 'ArrowDown':
+                    movePlayer(0, 1);
+                    break;
+                case 'KeyA':
+                case 'ArrowLeft':
+                    movePlayer(-1, 0);
+                    break;
+                case 'KeyD':
+                case 'ArrowRight':
+                    movePlayer(1, 0);
+                    break;
+                case 'Space':
+                    e.preventDefault();
+                    checkInteractions();
+                    break;
+            }
+        });
+        
+        // Eventi UI
+        document.getElementById('answerInput').addEventListener('keydown', (e) => {
+            if (e.code === 'Enter') {
+                checkAnswer();
+            }
+        });
+        
+        // Game Over
+        function gameOver() {
+            gameState.gameRunning = false;
+            document.getElementById('gameOverScreen').style.display = 'block';
+        }
+        
+        // Vittoria
+        function showVictory() {
+            gameState.gameRunning = false;
+            document.getElementById('finalLevel').textContent = player.level;
+            document.getElementById('finalExp').textContent = player.exp;
+            document.getElementById('victoryScreen').style.display = 'block';
+        }
+        
+        // Restart
+        function restartGame() {
+            // Reset player
+            player = {
+                x: 1,
+                y: 1,
+                health: 100,
+                maxHealth: 100,
+                mana: 50,
+                maxMana: 50,
+                level: 1,
+                exp: 0,
+                expToNext: 100
+            };
+            
+            // Reset game state
+            gameState = {
+                currentRoom: 1,
+                maxRoom: 1,
+                currentEquation: null,
+                awaitingAnswer: false,
+                gameRunning: true
+            };
+            
+            // Reset UI
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('victoryScreen').style.display = 'none';
+            document.getElementById('equationPanel').style.display = 'none';
+            
+            // Clear message log
+            document.getElementById('messageLog').innerHTML = `
+                <div class="message info">🌟 Benvenuto in Algebra Quest!</div>
+                <div class="message info">🚪 Trova le porte blu e risolvile!</div>
+                <div class="message info">⚔️ I nemici rossi ti sfideranno!</div>
+            `;
+            
+            // Rigenera mappa
+            generateMap();
+            updateUI();
+        }
+        
+        // Game loop
+        function gameLoop() {
+            if (gameState.gameRunning) {
+                draw();
+                updateUI();
+            }
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Inizializza gioco
+        generateMap();
+        updateUI();
+        gameLoop();
