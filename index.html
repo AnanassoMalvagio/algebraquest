@@ -684,12 +684,14 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Calcola offset per centrare il player
-            const offsetX = canvas.width / 2 - player.x * TILE_SIZE - TILE_SIZE / 2;
-            const offsetY = canvas.height / 2 - player.y * TILE_SIZE - TILE_SIZE / 2;
+            // Sistema di coordinate semplificato - mostra sempre dall'angolo superiore sinistro
+            const viewX = Math.max(0, Math.min(MAP_WIDTH * TILE_SIZE - canvas.width, 
+                         player.x * TILE_SIZE - canvas.width / 2));
+            const viewY = Math.max(0, Math.min(MAP_HEIGHT * TILE_SIZE - canvas.height, 
+                         player.y * TILE_SIZE - canvas.height / 2));
             
             ctx.save();
-            ctx.translate(offsetX, offsetY);
+            ctx.translate(-viewX, -viewY);
             
             // Disegna mappa
             for (let y = 0; y < MAP_HEIGHT; y++) {
@@ -706,10 +708,13 @@
                 }
             });
             
-            // Disegna player
+            // Disegna player con evidenziazione
             drawPlayer(player.x * TILE_SIZE, player.y * TILE_SIZE);
             
             ctx.restore();
+            
+            // Aggiungi mini-mappa nell'angolo
+            drawMinimap();
         }
         
         function drawCell(x, y, type) {
@@ -765,18 +770,74 @@
         }
         
         function drawPlayer(x, y) {
-            // Cerchio per il player
+            // Cerchio luminoso per il player
             ctx.fillStyle = '#00ffff';
+            ctx.shadowColor = '#00ffff';
+            ctx.shadowBlur = 10;
             ctx.beginPath();
-            ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE/2 - 2, 0, Math.PI * 2);
+            ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE/2 - 3, 0, Math.PI * 2);
             ctx.fill();
+            ctx.shadowBlur = 0;
             
-            // Simbolo player
+            // Bordo
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Simbolo player più visibile
             ctx.fillStyle = '#000';
-            ctx.font = '16px Arial';
+            ctx.font = 'bold 18px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('👤', x + TILE_SIZE/2, y + TILE_SIZE/2);
+            ctx.fillText('@', x + TILE_SIZE/2, y + TILE_SIZE/2);
+        }
+        
+        // Mini-mappa per orientarsi
+        function drawMinimap() {
+            const miniSize = 120;
+            const startX = canvas.width - miniSize - 10;
+            const startY = 10;
+            
+            // Sfondo mini-mappa
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(startX, startY, miniSize, miniSize);
+            ctx.strokeStyle = '#666';
+            ctx.strokeRect(startX, startY, miniSize, miniSize);
+            
+            const scale = miniSize / (MAP_WIDTH * TILE_SIZE);
+            
+            // Disegna mappa in miniatura
+            for (let y = 0; y < MAP_HEIGHT; y++) {
+                for (let x = 0; x < MAP_WIDTH; x++) {
+                    const cellType = gameMap[y][x];
+                    if (cellType === CELL_TYPES.FLOOR) {
+                        ctx.fillStyle = '#444';
+                        ctx.fillRect(startX + x * TILE_SIZE * scale, 
+                                   startY + y * TILE_SIZE * scale, 
+                                   TILE_SIZE * scale, TILE_SIZE * scale);
+                    }
+                }
+            }
+            
+            // Player sulla mini-mappa
+            ctx.fillStyle = '#00ffff';
+            ctx.fillRect(startX + player.x * TILE_SIZE * scale - 1, 
+                       startY + player.y * TILE_SIZE * scale - 1, 3, 3);
+            
+            // Entità sulla mini-mappa
+            entities.forEach(entity => {
+                if (!entity.solved) {
+                    let color = '#fff';
+                    if (entity.type === CELL_TYPES.DOOR) color = '#4169e1';
+                    if (entity.type === CELL_TYPES.ENEMY) color = '#dc143c';
+                    if (entity.type === CELL_TYPES.TREASURE) color = '#ffd700';
+                    if (entity.type === CELL_TYPES.EXIT) color = '#32cd32';
+                    
+                    ctx.fillStyle = color;
+                    ctx.fillRect(startX + entity.x * TILE_SIZE * scale, 
+                               startY + entity.y * TILE_SIZE * scale, 2, 2);
+                }
+            });
         }
         
         // Controlli
