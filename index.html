@@ -8,8 +8,8 @@
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #2c1810 0%, #8b4513 50%, #1a0f0a 100%);
-            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #f4e4bc;
             overflow: hidden;
         }
@@ -22,36 +22,45 @@
         .game-area {
             flex: 1;
             position: relative;
-            background: #000;
-            border: 3px solid #8b4513;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid #ffd700;
+            margin: 10px;
+            border-radius: 10px;
         }
         
         #gameCanvas {
             display: block;
             background: #1a1a1a;
+            border: 2px solid #444;
+            border-radius: 5px;
         }
         
         .sidebar {
-            width: 300px;
-            background: rgba(20, 10, 5, 0.9);
-            border-left: 3px solid #8b4513;
+            width: 350px;
+            background: rgba(20, 20, 30, 0.95);
+            border-left: 3px solid #ffd700;
             padding: 20px;
             box-shadow: inset 5px 0 15px rgba(0,0,0,0.5);
+            overflow-y: auto;
         }
         
         .title {
             text-align: center;
-            font-size: 24px;
+            font-size: 28px;
             color: #ffd700;
             text-shadow: 2px 2px 4px #000;
             margin-bottom: 20px;
-            border-bottom: 2px solid #8b4513;
+            border-bottom: 2px solid #ffd700;
             padding-bottom: 10px;
+            font-weight: bold;
         }
         
         .stats {
-            background: rgba(139, 69, 19, 0.3);
-            border: 2px solid #8b4513;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
             border-radius: 10px;
             padding: 15px;
             margin: 15px 0;
@@ -60,7 +69,7 @@
         .stat-item {
             display: flex;
             justify-content: space-between;
-            margin: 8px 0;
+            margin: 10px 0;
             font-size: 16px;
         }
         
@@ -71,156 +80,200 @@
         
         .health-bar, .mana-bar {
             width: 100%;
-            height: 20px;
+            height: 25px;
             background: #333;
-            border: 1px solid #666;
-            border-radius: 10px;
+            border: 2px solid #666;
+            border-radius: 12px;
             overflow: hidden;
-            margin: 5px 0;
+            margin: 8px 0;
+            position: relative;
         }
         
         .health-fill {
             height: 100%;
             background: linear-gradient(to right, #ff4444, #ff6666);
-            transition: width 0.3s;
+            transition: width 0.3s ease;
         }
         
         .mana-fill {
             height: 100%;
             background: linear-gradient(to right, #4444ff, #6666ff);
-            transition: width 0.3s;
+            transition: width 0.3s ease;
+        }
+        
+        .bar-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 25px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
         
         .equation-panel {
-            background: rgba(0, 0, 50, 0.8);
-            border: 2px solid #4169e1;
-            border-radius: 10px;
-            padding: 20px;
+            background: linear-gradient(135deg, rgba(0, 0, 50, 0.9), rgba(0, 0, 100, 0.9));
+            border: 3px solid #4169e1;
+            border-radius: 15px;
+            padding: 25px;
             margin: 15px 0;
             display: none;
             text-align: center;
-            box-shadow: 0 0 20px rgba(65, 105, 225, 0.5);
+            box-shadow: 0 0 30px rgba(65, 105, 225, 0.6);
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(65, 105, 225, 0.6); }
+            50% { box-shadow: 0 0 40px rgba(65, 105, 225, 0.8); }
         }
         
         .equation-text {
-            font-size: 24px;
+            font-size: 28px;
             color: #87ceeb;
-            margin: 15px 0;
+            margin: 20px 0;
             font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         
         .answer-input {
-            width: 80px;
-            padding: 10px;
-            font-size: 18px;
+            width: 100px;
+            padding: 12px;
+            font-size: 20px;
             text-align: center;
             border: 2px solid #4169e1;
-            border-radius: 5px;
+            border-radius: 8px;
             background: #001122;
             color: #fff;
             margin: 10px 5px;
+            font-weight: bold;
         }
         
         .submit-btn {
-            background: #4169e1;
+            background: linear-gradient(135deg, #4169e1, #5a7bd4);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            margin: 10px;
+            margin: 10px 5px;
             transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
         }
         
         .submit-btn:hover {
-            background: #5a7bd4;
+            background: linear-gradient(135deg, #5a7bd4, #6b8ce5);
             transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(65, 105, 225, 0.4);
         }
         
         .controls {
-            background: rgba(139, 69, 19, 0.3);
-            border: 2px solid #8b4513;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
             border-radius: 10px;
             padding: 15px;
             margin: 15px 0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .message-log {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #666;
+            border-radius: 10px;
+            padding: 15px;
+            height: 180px;
+            overflow-y: auto;
             font-size: 14px;
             line-height: 1.6;
         }
         
-        .message-log {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #666;
-            border-radius: 10px;
-            padding: 15px;
-            height: 200px;
-            overflow-y: auto;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        
         .message {
             margin: 5px 0;
-            padding: 5px;
-            border-radius: 3px;
+            padding: 8px;
+            border-radius: 5px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         
         .message.success {
             background: rgba(0, 255, 0, 0.2);
             color: #90ee90;
+            border-left: 4px solid #90ee90;
         }
         
         .message.error {
             background: rgba(255, 0, 0, 0.2);
             color: #ffcccb;
+            border-left: 4px solid #ff6666;
         }
         
         .message.info {
-            background: rgba(0, 0, 255, 0.2);
+            background: rgba(0, 100, 255, 0.2);
             color: #add8e6;
+            border-left: 4px solid #4169e1;
         }
         
-        .victory-screen, .game-over-screen {
+        .screen-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 40, 0.95));
             border: 3px solid #ffd700;
-            border-radius: 15px;
-            padding: 40px;
+            border-radius: 20px;
+            padding: 50px;
             text-align: center;
             display: none;
             z-index: 1000;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+        }
+        
+        .screen-overlay h2 {
+            font-size: 36px;
+            margin-top: 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
         }
         
         .victory-screen h2 {
             color: #ffd700;
-            font-size: 32px;
-            margin-top: 0;
         }
         
         .game-over-screen h2 {
             color: #ff4444;
-            font-size: 32px;
-            margin-top: 0;
         }
         
         .restart-btn {
-            background: #8b4513;
-            color: #f4e4bc;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1a1a2e;
             border: none;
-            padding: 15px 30px;
+            padding: 15px 40px;
             font-size: 18px;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             margin-top: 20px;
             transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
         }
         
         .restart-btn:hover {
-            background: #a0522d;
-            transform: scale(1.05);
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+        }
+        
+        .loading {
+            text-align: center;
+            font-size: 24px;
+            color: #ffd700;
+            padding: 50px;
         }
     </style>
 </head>
@@ -228,96 +281,104 @@
     <div class="game-container">
         <div class="game-area">
             <canvas id="gameCanvas" width="600" height="600"></canvas>
+            <div id="loadingScreen" class="loading" style="position: absolute;">
+                🎮 Caricamento Algebra Quest...
+            </div>
         </div>
         
         <div class="sidebar">
-            <div class="title">🏰 ALGEBRA QUEST</div>
+            <div class="title">🏰 ALGEBRA QUEST 🏰</div>
             
             <div class="stats">
                 <div class="stat-item">
-                    <span>Livello:</span>
+                    <span>⭐ Livello:</span>
                     <span class="stat-value" id="level">1</span>
                 </div>
                 <div class="stat-item">
-                    <span>Punti Exp:</span>
-                    <span class="stat-value" id="exp">0</span>
+                    <span>✨ Esperienza:</span>
+                    <span class="stat-value" id="exp">0/100</span>
                 </div>
                 <div class="stat-item">
-                    <span>Stanza:</span>
+                    <span>📍 Stanza:</span>
                     <span class="stat-value" id="room">1</span>
                 </div>
                 
-                <div style="margin: 10px 0;">
-                    <div>Salute: <span id="healthText">100/100</span></div>
+                <div style="margin: 15px 0;">
+                    <div style="margin-bottom: 5px;">❤️ Salute</div>
                     <div class="health-bar">
+                        <div class="bar-text" id="healthText">100/100</div>
                         <div class="health-fill" id="healthFill" style="width: 100%"></div>
                     </div>
                 </div>
                 
-                <div style="margin: 10px 0;">
-                    <div>Mana: <span id="manaText">50/50</span></div>
+                <div style="margin: 15px 0;">
+                    <div style="margin-bottom: 5px;">💙 Mana</div>
                     <div class="mana-bar">
+                        <div class="bar-text" id="manaText">50/50</div>
                         <div class="mana-fill" id="manaFill" style="width: 100%"></div>
                     </div>
                 </div>
             </div>
             
             <div class="equation-panel" id="equationPanel">
-                <h3 style="color: #87ceeb; margin-top: 0;">🧮 Risolvi l'Equazione!</h3>
+                <h3 style="color: #87ceeb; margin-top: 0;">🧮 SFIDA MATEMATICA!</h3>
                 <div class="equation-text" id="equationText">2x + 5 = 13</div>
                 <div>
-                    <span style="color: #87ceeb;">x = </span>
+                    <span style="color: #87ceeb; font-size: 20px; font-weight: bold;">x = </span>
                     <input type="number" class="answer-input" id="answerInput" placeholder="?">
                 </div>
-                <button class="submit-btn" onclick="checkAnswer()">Risolvi</button>
-                <button class="submit-btn" onclick="skipEquation()" style="background: #666;">Salta (-10 Mana)</button>
+                <button class="submit-btn" onclick="checkAnswer()">✅ Risolvi</button>
+                <button class="submit-btn" onclick="skipEquation()" style="background: linear-gradient(135deg, #666, #888);">⏭️ Salta (-10 Mana)</button>
             </div>
             
             <div class="controls">
-                <strong>🎮 Controlli:</strong><br>
-                WASD / Frecce: Muovi<br>
-                SPAZIO: Interagisci<br><br>
+                <strong>🎮 CONTROLLI:</strong><br>
+                <b>WASD / Frecce:</b> Muovi il personaggio<br>
+                <b>SPAZIO:</b> Interagisci con oggetti<br><br>
                 
-                <strong>🎯 Obiettivo:</strong><br>
-                Risolvi equazioni per:<br>
-                • Aprire porte 🚪<br>
-                • Sconfiggere nemici ⚔️<br>
-                • Trovare tesori 💰<br>
-                • Raggiungere l'uscita 🏆
+                <strong>🎯 OBIETTIVO:</strong><br>
+                Risolvi equazioni matematiche per:<br>
+                • 🚪 Aprire porte bloccate<br>
+                • ⚔️ Sconfiggere nemici<br>
+                • 💰 Raccogliere tesori<br>
+                • 🏆 Raggiungere l'uscita!
             </div>
             
             <div class="message-log" id="messageLog">
                 <div class="message info">🌟 Benvenuto in Algebra Quest!</div>
-                <div class="message info">🚪 Trova le porte blu e risolvile!</div>
-                <div class="message info">⚔️ I nemici rossi ti sfideranno!</div>
+                <div class="message info">🎮 Usa WASD o le frecce per muoverti</div>
+                <div class="message info">🚪 Avvicinati agli oggetti e premi SPAZIO</div>
             </div>
         </div>
     </div>
     
-    <div class="victory-screen" id="victoryScreen">
-        <h2>🏆 VITTORIA!</h2>
-        <div style="font-size: 20px; margin: 20px 0;">
-            Hai completato il dungeon!<br>
-            Livello finale: <span id="finalLevel" style="color: #ffd700;">1</span><br>
-            Esperienza totale: <span id="finalExp" style="color: #ffd700;">0</span>
+    <div class="screen-overlay victory-screen" id="victoryScreen">
+        <h2>🏆 VITTORIA! 🏆</h2>
+        <div style="font-size: 20px; margin: 30px 0;">
+            Complimenti! Hai completato il dungeon!<br><br>
+            Livello finale: <span id="finalLevel" style="color: #ffd700; font-weight: bold;">1</span><br>
+            Esperienza totale: <span id="finalExp" style="color: #ffd700; font-weight: bold;">0</span><br><br>
+            Sei un vero maestro dell'algebra!
         </div>
-        <button class="restart-btn" onclick="restartGame()">Nuova Avventura</button>
+        <button class="restart-btn" onclick="restartGame()">🎮 Nuova Avventura</button>
     </div>
     
-    <div class="game-over-screen" id="gameOverScreen">
-        <h2>💀 GAME OVER</h2>
-        <div style="font-size: 18px; margin: 20px 0;">
-            Hai esaurito la salute!<br>
-            La matematica ha avuto la meglio...
+    <div class="screen-overlay game-over-screen" id="gameOverScreen">
+        <h2>💀 GAME OVER 💀</h2>
+        <div style="font-size: 18px; margin: 30px 0; color: #ff9999;">
+            La tua avventura è terminata!<br>
+            Le equazioni hanno avuto la meglio...<br><br>
+            Non arrenderti! Riprova!
         </div>
-        <button class="restart-btn" onclick="restartGame()">Riprova</button>
+        <button class="restart-btn" onclick="restartGame()">🔄 Riprova</button>
     </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const loadingScreen = document.getElementById('loadingScreen');
         
-        // Costanti
+        // Costanti del gioco
         const TILE_SIZE = 30;
         const MAP_WIDTH = 20;
         const MAP_HEIGHT = 20;
@@ -329,11 +390,10 @@
             DOOR: 2,
             ENEMY: 3,
             TREASURE: 4,
-            EXIT: 5,
-            PLAYER: 6
+            EXIT: 5
         };
         
-        // Stato del gioco
+        // Stato del giocatore
         let player = {
             x: 1,
             y: 1,
@@ -343,76 +403,101 @@
             maxMana: 50,
             level: 1,
             exp: 0,
-            expToNext: 100
+            expToNext: 100,
+            color: '#00ffff'
         };
         
+        // Stato del gioco
         let gameState = {
             currentRoom: 1,
-            maxRoom: 1,
             currentEquation: null,
             awaitingAnswer: false,
-            gameRunning: true
+            gameRunning: true,
+            initialized: false
         };
         
+        // Mappa e entità
         let gameMap = [];
         let entities = [];
         
-        // Generatori di equazioni
-        const equationTypes = [
-            // Equazioni lineari semplici
-            () => {
-                const a = Math.floor(Math.random() * 10) + 1;
-                const b = Math.floor(Math.random() * 20) + 1;
-                const x = Math.floor(Math.random() * 10) + 1;
-                const result = a * x + b;
-                return {
-                    text: `${a}x + ${b} = ${result}`,
-                    answer: x,
-                    difficulty: 1
-                };
-            },
-            // Equazioni con sottrazione
-            () => {
-                const a = Math.floor(Math.random() * 10) + 2;
-                const b = Math.floor(Math.random() * 15) + 5;
-                const x = Math.floor(Math.random() * 8) + 2;
-                const result = a * x - b;
-                return {
-                    text: `${a}x - ${b} = ${result}`,
-                    answer: x,
-                    difficulty: 2
-                };
-            },
-            // Equazioni con divisione
-            () => {
-                const x = Math.floor(Math.random() * 12) + 3;
-                const a = Math.floor(Math.random() * 6) + 2;
-                const b = Math.floor(Math.random() * 20) + 1;
-                const result = x / a + b;
-                return {
-                    text: `x/${a} + ${b} = ${result}`,
-                    answer: x,
-                    difficulty: 3
-                };
-            },
-            // Equazioni quadratiche semplici
-            () => {
-                const x = Math.floor(Math.random() * 5) + 2;
-                const result = x * x;
-                return {
-                    text: `x² = ${result}`,
-                    answer: x,
-                    difficulty: 4
-                };
-            }
-        ];
-        
-        // Genera mappa
-        function generateMap() {
-            gameMap = [];
-            entities = [];
+        // Generatore di equazioni con difficoltà crescente
+        function generateEquation() {
+            const difficulty = Math.min(player.level, 5);
+            let equation = {};
             
+            switch(Math.floor(Math.random() * difficulty) + 1) {
+                case 1: // Equazioni lineari semplici
+                    const a1 = Math.floor(Math.random() * 5) + 2;
+                    const b1 = Math.floor(Math.random() * 10) + 1;
+                    const x1 = Math.floor(Math.random() * 10) + 1;
+                    equation = {
+                        text: `${a1}x + ${b1} = ${a1 * x1 + b1}`,
+                        answer: x1,
+                        difficulty: 1
+                    };
+                    break;
+                    
+                case 2: // Equazioni con sottrazione
+                    const a2 = Math.floor(Math.random() * 7) + 3;
+                    const b2 = Math.floor(Math.random() * 15) + 5;
+                    const x2 = Math.floor(Math.random() * 8) + 2;
+                    equation = {
+                        text: `${a2}x - ${b2} = ${a2 * x2 - b2}`,
+                        answer: x2,
+                        difficulty: 2
+                    };
+                    break;
+                    
+                case 3: // Equazioni con entrambi i membri
+                    const a3 = Math.floor(Math.random() * 5) + 2;
+                    const b3 = Math.floor(Math.random() * 10) + 1;
+                    const c3 = Math.floor(Math.random() * 5) + 1;
+                    const x3 = Math.floor(Math.random() * 10) + 1;
+                    equation = {
+                        text: `${a3}x + ${b3} = ${c3}x + ${a3 * x3 + b3 - c3 * x3}`,
+                        answer: x3,
+                        difficulty: 3
+                    };
+                    break;
+                    
+                case 4: // Equazioni con parentesi
+                    const a4 = Math.floor(Math.random() * 4) + 2;
+                    const x4 = Math.floor(Math.random() * 8) + 1;
+                    const result4 = a4 * (x4 + 3);
+                    equation = {
+                        text: `${a4}(x + 3) = ${result4}`,
+                        answer: x4,
+                        difficulty: 4
+                    };
+                    break;
+                    
+                case 5: // Equazioni quadratiche semplici
+                    const x5 = Math.floor(Math.random() * 6) + 2;
+                    equation = {
+                        text: `x² = ${x5 * x5}`,
+                        answer: x5,
+                        difficulty: 5
+                    };
+                    break;
+                    
+                default:
+                    const ax = Math.floor(Math.random() * 5) + 1;
+                    const bx = Math.floor(Math.random() * 10) + 1;
+                    const xx = Math.floor(Math.random() * 10) + 1;
+                    equation = {
+                        text: `${ax}x + ${bx} = ${ax * xx + bx}`,
+                        answer: xx,
+                        difficulty: 1
+                    };
+            }
+            
+            return equation;
+        }
+        
+        // Genera la mappa del dungeon
+        function generateMap() {
             // Inizializza con muri
+            gameMap = [];
             for (let y = 0; y < MAP_HEIGHT; y++) {
                 gameMap[y] = [];
                 for (let x = 0; x < MAP_WIDTH; x++) {
@@ -420,71 +505,43 @@
                 }
             }
             
-            // Crea stanze e corridoi
-            createRooms();
-            
-            // Posiziona player
-            player.x = 1;
-            player.y = 1;
-            gameMap[1][1] = CELL_TYPES.FLOOR;
-            
-            // Aggiungi entità
-            addEntities();
-        }
-        
-        function createRooms() {
-            // Algoritmo semplificato per creare un labirinto
+            // Crea stanze
             const rooms = [
                 {x: 1, y: 1, w: 6, h: 6},
-                {x: 10, y: 1, w: 8, h: 5},
-                {x: 1, y: 10, w: 5, h: 8},
-                {x: 12, y: 8, w: 6, h: 10},
-                {x: 8, y: 15, w: 4, h: 4}
+                {x: 10, y: 2, w: 8, h: 5},
+                {x: 2, y: 10, w: 5, h: 7},
+                {x: 12, y: 10, w: 6, h: 8},
+                {x: 7, y: 7, w: 4, h: 4}
             ];
             
-            // Crea stanze
+            // Scava le stanze
             rooms.forEach(room => {
-                for (let y = room.y; y < room.y + room.h; y++) {
-                    for (let x = room.x; x < room.x + room.w; x++) {
-                        if (x < MAP_WIDTH && y < MAP_HEIGHT) {
-                            gameMap[y][x] = CELL_TYPES.FLOOR;
-                        }
+                for (let y = room.y; y < Math.min(room.y + room.h, MAP_HEIGHT - 1); y++) {
+                    for (let x = room.x; x < Math.min(room.x + room.w, MAP_WIDTH - 1); x++) {
+                        gameMap[y][x] = CELL_TYPES.FLOOR;
                     }
                 }
             });
             
-            // Crea corridoi
+            // Crea corridoi tra le stanze
             createCorridor(7, 3, 10, 3);
-            createCorridor(3, 7, 3, 10);
-            createCorridor(6, 13, 12, 13);
-            createCorridor(14, 6, 14, 8);
-        }
-        
-        function createCorridor(x1, y1, x2, y2) {
-            const dx = x2 > x1 ? 1 : -1;
-            const dy = y2 > y1 ? 1 : -1;
+            createCorridor(4, 7, 4, 10);
+            createCorridor(7, 11, 12, 11);
+            createCorridor(11, 8, 12, 10);
+            createCorridor(9, 7, 9, 3);
             
-            let x = x1, y = y1;
-            while (x !== x2 || y !== y2) {
-                if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT) {
-                    gameMap[y][x] = CELL_TYPES.FLOOR;
-                }
-                if (x !== x2) x += dx;
-                if (y !== y2) y += dy;
-            }
-        }
-        
-        function addEntities() {
-            const positions = [
-                {x: 15, y: 3, type: CELL_TYPES.DOOR},
-                {x: 3, y: 15, type: CELL_TYPES.ENEMY},
-                {x: 14, y: 15, type: CELL_TYPES.TREASURE},
-                {x: 16, y: 16, type: CELL_TYPES.EXIT},
-                {x: 5, y: 5, type: CELL_TYPES.DOOR},
-                {x: 12, y: 12, type: CELL_TYPES.ENEMY}
+            // Posiziona entità nel dungeon
+            entities = [];
+            const entityPositions = [
+                {x: 5, y: 3, type: CELL_TYPES.DOOR},
+                {x: 15, y: 4, type: CELL_TYPES.ENEMY},
+                {x: 3, y: 14, type: CELL_TYPES.TREASURE},
+                {x: 9, y: 9, type: CELL_TYPES.DOOR},
+                {x: 14, y: 14, type: CELL_TYPES.ENEMY},
+                {x: 16, y: 16, type: CELL_TYPES.EXIT}
             ];
             
-            positions.forEach(pos => {
+            entityPositions.forEach(pos => {
                 if (gameMap[pos.y] && gameMap[pos.y][pos.x] === CELL_TYPES.FLOOR) {
                     entities.push({
                         x: pos.x,
@@ -494,75 +551,94 @@
                     });
                 }
             });
+            
+            // Posizione iniziale del giocatore
+            player.x = 1;
+            player.y = 1;
         }
         
-        // Genera equazione basata sul livello
-        function generateEquation() {
-            const maxType = Math.min(player.level - 1, equationTypes.length - 1);
-            const typeIndex = Math.floor(Math.random() * (maxType + 1));
-            return equationTypes[typeIndex]();
+        // Crea un corridoio tra due punti
+        function createCorridor(x1, y1, x2, y2) {
+            let x = x1, y = y1;
+            
+            // Movimento orizzontale
+            while (x !== x2) {
+                if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT) {
+                    gameMap[y][x] = CELL_TYPES.FLOOR;
+                }
+                x += x2 > x1 ? 1 : -1;
+            }
+            
+            // Movimento verticale
+            while (y !== y2) {
+                if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT) {
+                    gameMap[y][x] = CELL_TYPES.FLOOR;
+                }
+                y += y2 > y1 ? 1 : -1;
+            }
+            
+            // Assicura che il punto finale sia percorribile
+            if (x2 >= 0 && x2 < MAP_WIDTH && y2 >= 0 && y2 < MAP_HEIGHT) {
+                gameMap[y2][x2] = CELL_TYPES.FLOOR;
+            }
         }
         
-        // Movimento del player
+        // Muovi il giocatore
         function movePlayer(dx, dy) {
             if (!gameState.gameRunning || gameState.awaitingAnswer) return;
             
             const newX = player.x + dx;
             const newY = player.y + dy;
             
-            // Controllo limiti
-            if (newX < 0 || newX >= MAP_WIDTH || newY < 0 || newY >= MAP_HEIGHT) {
-                return;
-            }
+            // Controlla i limiti della mappa
+            if (newX < 0 || newX >= MAP_WIDTH || newY < 0 || newY >= MAP_HEIGHT) return;
             
-            // Controllo muri
-            if (gameMap[newY][newX] === CELL_TYPES.WALL) {
-                return;
-            }
+            // Controlla collisione con i muri
+            if (gameMap[newY][newX] === CELL_TYPES.WALL) return;
             
-            // Muovi player
+            // Muovi il giocatore
             player.x = newX;
             player.y = newY;
             
-            // Controlla interazioni
+            // Controlla interazioni automatiche
             checkInteractions();
         }
         
+        // Controlla interazioni con entità
         function checkInteractions() {
-            const entity = entities.find(e => e.x === player.x && e.y === player.y && !e.solved);
-            
-            if (entity) {
-                handleEntityInteraction(entity);
-            }
+            entities.forEach(entity => {
+                if (!entity.solved && entity.x === player.x && entity.y === player.y) {
+                    handleEntityInteraction(entity);
+                }
+            });
         }
         
+        // Gestisce l'interazione con un'entità
         function handleEntityInteraction(entity) {
-            switch (entity.type) {
+            let message = '';
+            switch(entity.type) {
                 case CELL_TYPES.DOOR:
-                    addMessage('🚪 Porta bloccata! Risolvi l\'equazione per aprirla.', 'info');
-                    showEquation('door', entity);
+                    message = '🚪 Una porta bloccata! Risolvi per aprirla!';
                     break;
                 case CELL_TYPES.ENEMY:
-                    addMessage('⚔️ Nemico! Sconfiggilo risolvendo l\'equazione!', 'info');
-                    showEquation('enemy', entity);
+                    message = '⚔️ Un nemico ti sfida! Risolvi per sconfiggerlo!';
                     break;
                 case CELL_TYPES.TREASURE:
-                    addMessage('💰 Tesoro! Risolvi per ottenerlo!', 'info');
-                    showEquation('treasure', entity);
+                    message = '💰 Un tesoro! Risolvi per ottenerlo!';
                     break;
                 case CELL_TYPES.EXIT:
-                    addMessage('🏆 Uscita trovata! Un\'ultima sfida!', 'info');
-                    showEquation('exit', entity);
+                    message = '🏆 L\'uscita! Un\'ultima sfida ti attende!';
                     break;
             }
+            
+            addMessage(message, 'info');
+            showEquation(entity);
         }
         
-        function showEquation(type, entity) {
-            gameState.currentEquation = {
-                ...generateEquation(),
-                type: type,
-                entity: entity
-            };
+        // Mostra il pannello dell'equazione
+        function showEquation(entity) {
+            gameState.currentEquation = generateEquation();
+            gameState.currentEquation.entity = entity;
             
             document.getElementById('equationText').textContent = gameState.currentEquation.text;
             document.getElementById('answerInput').value = '';
@@ -572,6 +648,7 @@
             gameState.awaitingAnswer = true;
         }
         
+        // Controlla la risposta
         function checkAnswer() {
             const userAnswer = parseInt(document.getElementById('answerInput').value);
             const correctAnswer = gameState.currentEquation.answer;
@@ -583,92 +660,83 @@
             }
         }
         
+        // Gestisce risposta corretta
         function handleCorrectAnswer() {
-            const eq = gameState.currentEquation;
-            eq.entity.solved = true;
+            const entity = gameState.currentEquation.entity;
+            entity.solved = true;
             
-            // Premi basati sul tipo e difficoltà
-            const baseExp = eq.difficulty * 20;
-            const bonusExp = eq.type === 'exit' ? 100 : 0;
+            const expGain = gameState.currentEquation.difficulty * 25;
+            player.exp += expGain;
             
-            player.exp += baseExp + bonusExp;
-            
-            // Effetti specifici per tipo
-            switch (eq.type) {
-                case 'door':
-                    addMessage('✅ Porta aperta! +' + baseExp + ' EXP', 'success');
+            let message = '';
+            switch(entity.type) {
+                case CELL_TYPES.DOOR:
+                    message = `✅ Porta aperta! +${expGain} EXP`;
                     break;
-                case 'enemy':
-                    addMessage('⚔️ Nemico sconfitto! +' + baseExp + ' EXP', 'success');
+                case CELL_TYPES.ENEMY:
+                    message = `⚔️ Nemico sconfitto! +${expGain} EXP +10 Mana`;
                     player.mana = Math.min(player.maxMana, player.mana + 10);
                     break;
-                case 'treasure':
-                    addMessage('💰 Tesoro ottenuto! +' + baseExp + ' EXP +20 Salute', 'success');
-                    player.health = Math.min(player.maxHealth, player.health + 20);
+                case CELL_TYPES.TREASURE:
+                    message = `💰 Tesoro ottenuto! +${expGain} EXP +25 Salute`;
+                    player.health = Math.min(player.maxHealth, player.health + 25);
                     break;
-                case 'exit':
-                    addMessage('🏆 Livello completato! +' + (baseExp + bonusExp) + ' EXP', 'success');
-                    setTimeout(() => showVictory(), 1000);
+                case CELL_TYPES.EXIT:
+                    message = `🏆 Vittoria! Hai completato il livello!`;
+                    setTimeout(showVictory, 1000);
                     break;
             }
             
+            addMessage(message, 'success');
             checkLevelUp();
             hideEquation();
         }
         
+        // Gestisce risposta sbagliata
         function handleWrongAnswer() {
-            addMessage('❌ Risposta sbagliata! -5 Salute', 'error');
-            player.health -= 5;
+            player.health -= 10;
+            addMessage(`❌ Risposta errata! -10 Salute`, 'error');
             
             if (player.health <= 0) {
                 gameOver();
             }
         }
         
+        // Salta l'equazione usando mana
         function skipEquation() {
             if (player.mana >= 10) {
                 player.mana -= 10;
-                addMessage('⏭️ Equazione saltata. -10 Mana', 'info');
+                gameState.currentEquation.entity.solved = true;
+                addMessage('⏭️ Enigma saltato con la magia! -10 Mana', 'info');
                 hideEquation();
             } else {
-                addMessage('❌ Mana insufficiente per saltare!', 'error');
+                addMessage('❌ Mana insufficiente!', 'error');
             }
         }
         
+        // Nasconde il pannello dell'equazione
         function hideEquation() {
             document.getElementById('equationPanel').style.display = 'none';
             gameState.awaitingAnswer = false;
             gameState.currentEquation = null;
         }
         
+        // Controlla level up
         function checkLevelUp() {
-            if (player.exp >= player.expToNext) {
+            while (player.exp >= player.expToNext) {
+                player.exp -= player.expToNext;
                 player.level++;
-                player.exp = 0;
-                player.expToNext += 50;
+                player.expToNext = 100 + (player.level - 1) * 50;
                 player.maxHealth += 20;
                 player.maxMana += 10;
                 player.health = player.maxHealth;
                 player.mana = player.maxMana;
                 
-                addMessage(`🆙 LEVEL UP! Livello ${player.level}!`, 'success');
+                addMessage(`🎉 LEVEL UP! Ora sei livello ${player.level}!`, 'success');
             }
         }
         
-        function addMessage(text, type = 'info') {
-            const log = document.getElementById('messageLog');
-            const message = document.createElement('div');
-            message.className = `message ${type}`;
-            message.textContent = text;
-            log.appendChild(message);
-            log.scrollTop = log.scrollHeight;
-            
-            // Rimuovi messaggi vecchi se troppi
-            if (log.children.length > 20) {
-                log.removeChild(log.firstChild);
-            }
-        }
-        
+        // Aggiorna l'interfaccia
         function updateUI() {
             document.getElementById('level').textContent = player.level;
             document.getElementById('exp').textContent = `${player.exp}/${player.expToNext}`;
@@ -680,205 +748,247 @@
             document.getElementById('manaFill').style.width = `${(player.mana / player.maxMana) * 100}%`;
         }
         
-        // Rendering
+        // Funzione di rendering principale
         function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Pulisce il canvas
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Sistema di coordinate semplificato - mostra sempre dall'angolo superiore sinistro
-            const viewX = Math.max(0, Math.min(MAP_WIDTH * TILE_SIZE - canvas.width, 
-                         player.x * TILE_SIZE - canvas.width / 2));
-            const viewY = Math.max(0, Math.min(MAP_HEIGHT * TILE_SIZE - canvas.height, 
-                         player.y * TILE_SIZE - canvas.height / 2));
+            // Calcola la vista centrata sul giocatore
+            const viewportX = Math.floor(canvas.width / TILE_SIZE);
+            const viewportY = Math.floor(canvas.height / TILE_SIZE);
+            const offsetX = Math.max(0, Math.min(MAP_WIDTH - viewportX, player.x - Math.floor(viewportX / 2)));
+            const offsetY = Math.max(0, Math.min(MAP_HEIGHT - viewportY, player.y - Math.floor(viewportY / 2)));
             
-            ctx.save();
-            ctx.translate(-viewX, -viewY);
-            
-            // Disegna mappa
-            for (let y = 0; y < MAP_HEIGHT; y++) {
-                for (let x = 0; x < MAP_WIDTH; x++) {
-                    const cellType = gameMap[y][x];
-                    drawCell(x * TILE_SIZE, y * TILE_SIZE, cellType);
+            // Disegna la mappa
+            for (let y = 0; y < viewportY; y++) {
+                for (let x = 0; x < viewportX; x++) {
+                    const mapX = offsetX + x;
+                    const mapY = offsetY + y;
+                    
+                    if (mapX >= 0 && mapX < MAP_WIDTH && mapY >= 0 && mapY < MAP_HEIGHT) {
+                        drawTile(x * TILE_SIZE, y * TILE_SIZE, gameMap[mapY][mapX]);
+                    }
                 }
             }
             
-            // Disegna entità
+            // Disegna le entità
             entities.forEach(entity => {
                 if (!entity.solved) {
-                    drawEntity(entity.x * TILE_SIZE, entity.y * TILE_SIZE, entity.type);
+                    const screenX = (entity.x - offsetX) * TILE_SIZE;
+                    const screenY = (entity.y - offsetY) * TILE_SIZE;
+                    
+                    if (screenX >= 0 && screenX < canvas.width && screenY >= 0 && screenY < canvas.height) {
+                        drawEntity(screenX, screenY, entity.type);
+                    }
                 }
             });
             
-            // Disegna player con evidenziazione
-            drawPlayer(player.x * TILE_SIZE, player.y * TILE_SIZE);
+            // Disegna il giocatore
+            const playerScreenX = (player.x - offsetX) * TILE_SIZE;
+            const playerScreenY = (player.y - offsetY) * TILE_SIZE;
+            drawPlayer(playerScreenX, playerScreenY);
             
-            ctx.restore();
-            
-            // Aggiungi mini-mappa nell'angolo
+            // Disegna la minimappa
             drawMinimap();
         }
         
-        function drawCell(x, y, type) {
-            switch (type) {
+        // Disegna una singola cella
+        function drawTile(x, y, type) {
+            switch(type) {
                 case CELL_TYPES.WALL:
-                    ctx.fillStyle = '#4a4a4a';
+                    // Muro con gradiente
+                    const gradient = ctx.createLinearGradient(x, y, x, y + TILE_SIZE);
+                    gradient.addColorStop(0, '#444');
+                    gradient.addColorStop(1, '#222');
+                    ctx.fillStyle = gradient;
                     ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-                    ctx.strokeStyle = '#666';
+                    
+                    // Bordo del muro
+                    ctx.strokeStyle = '#555';
+                    ctx.lineWidth = 1;
                     ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
                     break;
+                    
                 case CELL_TYPES.FLOOR:
-                    ctx.fillStyle = '#2a2a2a';
+                    // Pavimento con pattern
+                    ctx.fillStyle = '#1a1a1a';
                     ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                    
+                    // Griglia sottile
+                    ctx.strokeStyle = '#2a2a2a';
+                    ctx.lineWidth = 0.5;
+                    ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
                     break;
             }
         }
         
+        // Disegna un'entità
         function drawEntity(x, y, type) {
-            // Sfondo floor
-            ctx.fillStyle = '#2a2a2a';
-            ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+            ctx.save();
             
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.font = '20px Arial';
-            
-            switch (type) {
+            switch(type) {
                 case CELL_TYPES.DOOR:
-                    ctx.fillStyle = '#4169e1';
+                    // Porta blu
+                    ctx.fillStyle = '#1e3a8a';
                     ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
-                    ctx.fillStyle = '#fff';
+                    ctx.strokeStyle = '#3b82f6';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+                    
+                    // Simbolo porta
+                    ctx.fillStyle = '#60a5fa';
+                    ctx.font = '20px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
                     ctx.fillText('🚪', x + TILE_SIZE/2, y + TILE_SIZE/2);
                     break;
+                    
                 case CELL_TYPES.ENEMY:
-                    ctx.fillStyle = '#dc143c';
+                    // Nemico rosso
+                    ctx.fillStyle = '#7f1d1d';
                     ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
-                    ctx.fillStyle = '#fff';
-                    ctx.fillText('⚔️', x + TILE_SIZE/2, y + TILE_SIZE/2);
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+                    
+                    // Simbolo nemico
+                    ctx.fillStyle = '#f87171';
+                    ctx.font = '18px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('👹', x + TILE_SIZE/2, y + TILE_SIZE/2);
                     break;
+                    
                 case CELL_TYPES.TREASURE:
-                    ctx.fillStyle = '#ffd700';
-                    ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
-                    ctx.fillStyle = '#000';
+                    // Tesoro dorato
+                    const treasureGradient = ctx.createRadialGradient(
+                        x + TILE_SIZE/2, y + TILE_SIZE/2, 0,
+                        x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE/2
+                    );
+                    treasureGradient.addColorStop(0, '#fbbf24');
+                    treasureGradient.addColorStop(1, '#d97706');
+                    ctx.fillStyle = treasureGradient;
+                    ctx.fillRect(x + 3, y + 3, TILE_SIZE - 6, TILE_SIZE - 6);
+                    
+                    // Simbolo tesoro
+                    ctx.fillStyle = '#fef3c7';
+                    ctx.font = '18px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
                     ctx.fillText('💰', x + TILE_SIZE/2, y + TILE_SIZE/2);
                     break;
+                    
                 case CELL_TYPES.EXIT:
-                    ctx.fillStyle = '#32cd32';
-                    ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
-                    ctx.fillStyle = '#fff';
+                    // Uscita verde
+                    const exitGradient = ctx.createRadialGradient(
+                        x + TILE_SIZE/2, y + TILE_SIZE/2, 0,
+                        x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE/2
+                    );
+                    exitGradient.addColorStop(0, '#4ade80');
+                    exitGradient.addColorStop(1, '#16a34a');
+                    ctx.fillStyle = exitGradient;
+                    ctx.fillRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+                    
+                    // Simbolo uscita
+                    ctx.fillStyle = '#f0fdf4';
+                    ctx.font = '20px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
                     ctx.fillText('🏆', x + TILE_SIZE/2, y + TILE_SIZE/2);
                     break;
             }
+            
+            ctx.restore();
         }
         
+        // Disegna il giocatore
         function drawPlayer(x, y) {
-            // Cerchio luminoso per il player
-            ctx.fillStyle = '#00ffff';
-            ctx.shadowColor = '#00ffff';
+            ctx.save();
+            
+            // Effetto glow attorno al giocatore
+            ctx.shadowColor = player.color;
             ctx.shadowBlur = 10;
+            
+            // Corpo del giocatore
+            ctx.fillStyle = player.color;
             ctx.beginPath();
-            ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE/2 - 3, 0, Math.PI * 2);
+            ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE/3, 0, Math.PI * 2);
             ctx.fill();
-            ctx.shadowBlur = 0;
             
             // Bordo
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
             ctx.stroke();
             
-            // Simbolo player più visibile
+            // Simbolo del giocatore
             ctx.fillStyle = '#000';
-            ctx.font = 'bold 18px Arial';
+            ctx.font = 'bold 14px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('@', x + TILE_SIZE/2, y + TILE_SIZE/2);
+            ctx.fillText('⚔', x + TILE_SIZE/2, y + TILE_SIZE/2);
+            
+            ctx.restore();
         }
         
-        // Mini-mappa per orientarsi
+        // Disegna la minimappa
         function drawMinimap() {
-            const miniSize = 120;
-            const startX = canvas.width - miniSize - 10;
-            const startY = 10;
+            const minimapSize = 150;
+            const minimapX = canvas.width - minimapSize - 10;
+            const minimapY = 10;
+            const scale = minimapSize / Math.max(MAP_WIDTH, MAP_HEIGHT);
             
-            // Sfondo mini-mappa
-            ctx.fillStyle = 'rgba(0,0,0,0.7)';
-            ctx.fillRect(startX, startY, miniSize, miniSize);
-            ctx.strokeStyle = '#666';
-            ctx.strokeRect(startX, startY, miniSize, miniSize);
+            // Sfondo della minimappa
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(minimapX, minimapY, minimapSize, minimapSize);
+            ctx.strokeStyle = '#ffd700';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(minimapX, minimapY, minimapSize, minimapSize);
             
-            const scale = miniSize / (MAP_WIDTH * TILE_SIZE);
-            
-            // Disegna mappa in miniatura
+            // Disegna la mappa in scala
             for (let y = 0; y < MAP_HEIGHT; y++) {
                 for (let x = 0; x < MAP_WIDTH; x++) {
-                    const cellType = gameMap[y][x];
-                    if (cellType === CELL_TYPES.FLOOR) {
-                        ctx.fillStyle = '#444';
-                        ctx.fillRect(startX + x * TILE_SIZE * scale, 
-                                   startY + y * TILE_SIZE * scale, 
-                                   TILE_SIZE * scale, TILE_SIZE * scale);
+                    if (gameMap[y][x] === CELL_TYPES.FLOOR) {
+                        ctx.fillStyle = '#333';
+                        ctx.fillRect(
+                            minimapX + x * scale,
+                            minimapY + y * scale,
+                            scale,
+                            scale
+                        );
                     }
                 }
             }
             
-            // Player sulla mini-mappa
-            ctx.fillStyle = '#00ffff';
-            ctx.fillRect(startX + player.x * TILE_SIZE * scale - 1, 
-                       startY + player.y * TILE_SIZE * scale - 1, 3, 3);
-            
-            // Entità sulla mini-mappa
+            // Disegna le entità sulla minimappa
             entities.forEach(entity => {
                 if (!entity.solved) {
                     let color = '#fff';
-                    if (entity.type === CELL_TYPES.DOOR) color = '#4169e1';
-                    if (entity.type === CELL_TYPES.ENEMY) color = '#dc143c';
-                    if (entity.type === CELL_TYPES.TREASURE) color = '#ffd700';
-                    if (entity.type === CELL_TYPES.EXIT) color = '#32cd32';
-                    
+                    switch(entity.type) {
+                        case CELL_TYPES.DOOR: color = '#3b82f6'; break;
+                        case CELL_TYPES.ENEMY: color = '#ef4444'; break;
+                        case CELL_TYPES.TREASURE: color = '#fbbf24'; break;
+                        case CELL_TYPES.EXIT: color = '#4ade80'; break;
+                    }
                     ctx.fillStyle = color;
-                    ctx.fillRect(startX + entity.x * TILE_SIZE * scale, 
-                               startY + entity.y * TILE_SIZE * scale, 2, 2);
+                    ctx.fillRect(
+                        minimapX + entity.x * scale - 1,
+                        minimapY + entity.y * scale - 1,
+                        scale + 2,
+                        scale + 2
+                    );
                 }
             });
+            
+            // Posizione del giocatore
+            ctx.fillStyle = player.color;
+            ctx.fillRect(
+                minimapX + player.x * scale - 2,
+                minimapY + player.y * scale - 2,
+                scale + 4,
+                scale + 4
+            );
         }
-        
-        // Controlli
-        document.addEventListener('keydown', (e) => {
-            if (gameState.awaitingAnswer && e.code === 'Enter') {
-                checkAnswer();
-                return;
-            }
-            
-            if (gameState.awaitingAnswer) return;
-            
-            switch (e.code) {
-                case 'KeyW':
-                case 'ArrowUp':
-                    movePlayer(0, -1);
-                    break;
-                case 'KeyS':
-                case 'ArrowDown':
-                    movePlayer(0, 1);
-                    break;
-                case 'KeyA':
-                case 'ArrowLeft':
-                    movePlayer(-1, 0);
-                    break;
-                case 'KeyD':
-                case 'ArrowRight':
-                    movePlayer(1, 0);
-                    break;
-                case 'Space':
-                    e.preventDefault();
-                    checkInteractions();
-                    break;
-            }
-        });
-        
-        // Eventi UI
-        document.getElementById('answerInput').addEventListener('keydown', (e) => {
-            if (e.code === 'Enter') {
-                checkAnswer();
-            }
-        });
         
         // Game Over
         function gameOver() {
@@ -894,9 +1004,9 @@
             document.getElementById('victoryScreen').style.display = 'block';
         }
         
-        // Restart
+        // Riavvia il gioco
         function restartGame() {
-            // Reset player
+            // Reset giocatore
             player = {
                 x: 1,
                 y: 1,
@@ -906,34 +1016,73 @@
                 maxMana: 50,
                 level: 1,
                 exp: 0,
-                expToNext: 100
+                expToNext: 100,
+                color: '#00ffff'
             };
             
-            // Reset game state
+            // Reset stato del gioco
             gameState = {
                 currentRoom: 1,
-                maxRoom: 1,
                 currentEquation: null,
                 awaitingAnswer: false,
-                gameRunning: true
+                gameRunning: true,
+                initialized: true
             };
             
-            // Reset UI
+            // Nascondi schermate
             document.getElementById('gameOverScreen').style.display = 'none';
             document.getElementById('victoryScreen').style.display = 'none';
             document.getElementById('equationPanel').style.display = 'none';
             
-            // Clear message log
+            // Reset messaggi
             document.getElementById('messageLog').innerHTML = `
-                <div class="message info">🌟 Benvenuto in Algebra Quest!</div>
-                <div class="message info">🚪 Trova le porte blu e risolvile!</div>
-                <div class="message info">⚔️ I nemici rossi ti sfideranno!</div>
+                <div class="message info">🌟 Nuova avventura iniziata!</div>
+                <div class="message info">🎮 Buona fortuna!</div>
             `;
             
             // Rigenera mappa
             generateMap();
             updateUI();
         }
+        
+        // Gestione input da tastiera
+        document.addEventListener('keydown', (e) => {
+            if (!gameState.initialized) return;
+            
+            if (gameState.awaitingAnswer) {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+                return;
+            }
+            
+            switch(e.key.toLowerCase()) {
+                case 'w':
+                case 'arrowup':
+                    e.preventDefault();
+                    movePlayer(0, -1);
+                    break;
+                case 's':
+                case 'arrowdown':
+                    e.preventDefault();
+                    movePlayer(0, 1);
+                    break;
+                case 'a':
+                case 'arrowleft':
+                    e.preventDefault();
+                    movePlayer(-1, 0);
+                    break;
+                case 'd':
+                case 'arrowright':
+                    e.preventDefault();
+                    movePlayer(1, 0);
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    checkInteractions();
+                    break;
+            }
+        });
         
         // Game loop
         function gameLoop() {
@@ -944,7 +1093,36 @@
             requestAnimationFrame(gameLoop);
         }
         
-        // Inizializza gioco
-        generateMap();
-        updateUI();
-        gameLoop();
+        // Inizializzazione del gioco
+        function initGame() {
+            loadingScreen.style.display = 'none';
+            gameState.initialized = true;
+            generateMap();
+            updateUI();
+            gameLoop();
+            
+            addMessage('🎮 Gioco caricato! Usa WASD o le frecce per muoverti!', 'success');
+        }
+        
+        // Avvia il gioco quando tutto è pronto
+        window.addEventListener('load', () => {
+            setTimeout(initGame, 500);
+        });
+    </script>
+</body>
+</html>unge messaggio al log
+        function addMessage(text, type = 'info') {
+            const log = document.getElementById('messageLog');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            log.appendChild(message);
+            log.scrollTop = log.scrollHeight;
+            
+            // Rimuovi messaggi vecchi
+            while (log.children.length > 10) {
+                log.removeChild(log.firstChild);
+            }
+        }
+        
+        // Aggi
