@@ -333,21 +333,24 @@
             
             <div class="controls">
                 <strong>🎮 CONTROLLI:</strong><br>
-                <b>WASD / Frecce:</b> Muovi il personaggio<br>
-                <b>SPAZIO:</b> Interagisci con oggetti vicini<br><br>
+                <b>WASD / Frecce:</b> Muovi il personaggio<br><br>
                 
-                <strong>🎯 OBIETTIVO:</strong><br>
-                Risolvi equazioni matematiche per:<br>
-                • 🚪 Aprire porte bloccate (bloccano il passaggio)<br>
-                • ⚔️ Sconfiggere nemici (bloccano il passaggio)<br>
-                • 💰 Raccogliere tesori (cammina sopra)<br>
-                • 🏆 Raggiungere l'uscita (cammina sopra)<br><br>
+                <strong>🎯 COME GIOCARE:</strong><br>
+                • 🚶 Avvicinati agli oggetti colorati<br>
+                • ⚡ L'interazione parte automaticamente<br>
+                • 🧮 Risolvi l'equazione per procedere<br>
+                • 💡 Non serve premere SPAZIO!<br><br>
+                
+                <strong>📍 OGGETTI NEL DUNGEON:</strong><br>
+                • 🚪 <span style="color: #3b82f6;">Porte blu</span> - Bloccano il passaggio<br>
+                • 👹 <span style="color: #ef4444;">Nemici rossi</span> - Ti sfidano<br>
+                • 💰 <span style="color: #fbbf24;">Tesori dorati</span> - Bonus salute<br>
+                • 🏆 <span style="color: #4ade80;">Uscita verde</span> - Obiettivo finale<br><br>
                 
                 <strong>💡 SUGGERIMENTI:</strong><br>
-                • Porte e nemici bloccano il movimento<br>
-                • Usa SPAZIO quando sei vicino per interagire<br>
-                • I tesori si raccolgono automaticamente<br>
-                • Puoi saltare le equazioni con il mana
+                • Quando ti avvicini, parte la sfida<br>
+                • Puoi saltare con il mana se è troppo difficile<br>
+                • Guarda la minimappa per orientarti
             </div>
             
             <div class="message-log" id="messageLog">
@@ -602,71 +605,66 @@
             // Controlla collisione con i muri
             if (gameMap[newY][newX] === CELL_TYPES.WALL) return;
             
-            // Controlla se c'è un'entità non risolta nella nuova posizione
-            const blockingEntity = entities.find(e => 
-                !e.solved && e.x === newX && e.y === newY && 
-                (e.type === CELL_TYPES.DOOR || e.type === CELL_TYPES.ENEMY)
-            );
-            
-            if (blockingEntity) {
-                // Non muovere il giocatore, ma mostra un messaggio
-                if (blockingEntity.type === CELL_TYPES.DOOR) {
-                    addMessage('🚪 La porta è bloccata! Premi SPAZIO per provare ad aprirla.', 'info');
-                } else if (blockingEntity.type === CELL_TYPES.ENEMY) {
-                    addMessage('⚔️ Un nemico blocca il passaggio! Premi SPAZIO per sfidarlo.', 'info');
-                }
-                return;
-            }
-            
             // Muovi il giocatore
             player.x = newX;
             player.y = newY;
             
-            // Controlla se il giocatore è su un tesoro o sull'uscita
-            const entityAtPosition = entities.find(e => 
-                !e.solved && e.x === player.x && e.y === player.y &&
-                (e.type === CELL_TYPES.TREASURE || e.type === CELL_TYPES.EXIT)
-            );
-            
-            if (entityAtPosition) {
-                // Interazione automatica solo per tesori ed uscita
-                handleEntityInteraction(entityAtPosition);
-            }
+            // Controlla automaticamente interazioni quando arrivi vicino a un'entità
+            checkProximityInteractions();
         }
         
-        // Controlla interazioni con entità
-        function checkInteractions() {
-            // Controlla le 4 caselle adiacenti al giocatore
-            const adjacentPositions = [
-                {x: player.x, y: player.y - 1}, // sopra
-                {x: player.x, y: player.y + 1}, // sotto
-                {x: player.x - 1, y: player.y}, // sinistra
-                {x: player.x + 1, y: player.y}, // destra
-            ];
-            
-            let interactionFound = false;
-            
+        // Nuova funzione per interazioni di prossimità
+        function checkProximityInteractions() {
+            // Controlla se il giocatore è vicino (1 casella) a un'entità
             entities.forEach(entity => {
-                if (!entity.solved) {
-                    // Controlla se l'entità è in una posizione adiacente
-                    adjacentPositions.forEach(pos => {
-                        if (entity.x === pos.x && entity.y === pos.y) {
-                            handleEntityInteraction(entity);
-                            interactionFound = true;
-                        }
-                    });
+                if (!entity.solved && !gameState.awaitingAnswer) {
+                    const distance = Math.abs(entity.x - player.x) + Math.abs(entity.y - player.y);
                     
-                    // Controlla anche la posizione del giocatore stesso
-                    if (entity.x === player.x && entity.y === player.y) {
-                        handleEntityInteraction(entity);
-                        interactionFound = true;
+                    // Se sei a distanza 1 (adiacente) o 0 (sopra) dall'entità
+                    if (distance <= 1) {
+                        // Mostra un messaggio di prossimità
+                        if (!entity.proximityShown) {
+                            let proximityMsg = '';
+                            switch(entity.type) {
+                                case CELL_TYPES.DOOR:
+                                    proximityMsg = '🚪 Ti avvicini a una porta bloccata...';
+                                    break;
+                                case CELL_TYPES.ENEMY:
+                                    proximityMsg = '⚔️ Un nemico ti nota!';
+                                    break;
+                                case CELL_TYPES.TREASURE:
+                                    proximityMsg = '💰 Hai trovato un tesoro!';
+                                    break;
+                                case CELL_TYPES.EXIT:
+                                    proximityMsg = '🏆 L\'uscita è vicina!';
+                                    break;
+                            }
+                            addMessage(proximityMsg, 'info');
+                            entity.proximityShown = true;
+                            
+                            // Attiva automaticamente l'interazione dopo un breve ritardo
+                            setTimeout(() => {
+                                if (!gameState.awaitingAnswer && !entity.solved) {
+                                    const currentDistance = Math.abs(entity.x - player.x) + Math.abs(entity.y - player.y);
+                                    if (currentDistance <= 1) {
+                                        handleEntityInteraction(entity);
+                                    }
+                                }
+                            }, 500);
+                        }
+                    } else {
+                        // Reset il flag quando ti allontani
+                        entity.proximityShown = false;
                     }
                 }
             });
-            
-            if (!interactionFound) {
-                addMessage('🔍 Non c\'è nulla con cui interagire qui vicino.', 'info');
-            }
+        }
+        
+        // Rimuovi o modifica la funzione checkInteractions per non usare SPAZIO
+        function checkInteractions() {
+            // Questa funzione ora è vuota o può essere usata per altri scopi
+            // L'interazione avviene automaticamente con checkProximityInteractions
+            addMessage('💡 Avvicinati agli oggetti per interagire automaticamente!', 'info');
         }
         
         // Gestisce l'interazione con un'entità
@@ -883,9 +881,17 @@
         function drawEntity(x, y, type) {
             ctx.save();
             
+            // Aggiungi un'aura pulsante per indicare che è interagibile
+            if (!gameState.awaitingAnswer) {
+                const pulse = Math.sin(Date.now() / 300) * 0.3 + 0.7;
+                ctx.globalAlpha = pulse;
+            }
+            
             switch(type) {
                 case CELL_TYPES.DOOR:
-                    // Porta blu
+                    // Porta blu con effetto luminoso
+                    ctx.shadowColor = '#3b82f6';
+                    ctx.shadowBlur = 10;
                     ctx.fillStyle = '#1e3a8a';
                     ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
                     ctx.strokeStyle = '#3b82f6';
@@ -893,6 +899,7 @@
                     ctx.strokeRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
                     
                     // Simbolo porta
+                    ctx.globalAlpha = 1;
                     ctx.fillStyle = '#60a5fa';
                     ctx.font = '20px Arial';
                     ctx.textAlign = 'center';
@@ -901,7 +908,9 @@
                     break;
                     
                 case CELL_TYPES.ENEMY:
-                    // Nemico rosso
+                    // Nemico rosso con effetto luminoso
+                    ctx.shadowColor = '#ef4444';
+                    ctx.shadowBlur = 10;
                     ctx.fillStyle = '#7f1d1d';
                     ctx.fillRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
                     ctx.strokeStyle = '#ef4444';
@@ -909,6 +918,7 @@
                     ctx.strokeRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
                     
                     // Simbolo nemico
+                    ctx.globalAlpha = 1;
                     ctx.fillStyle = '#f87171';
                     ctx.font = '18px Arial';
                     ctx.textAlign = 'center';
@@ -917,7 +927,9 @@
                     break;
                     
                 case CELL_TYPES.TREASURE:
-                    // Tesoro dorato
+                    // Tesoro dorato con effetto scintillante
+                    ctx.shadowColor = '#fbbf24';
+                    ctx.shadowBlur = 15;
                     const treasureGradient = ctx.createRadialGradient(
                         x + TILE_SIZE/2, y + TILE_SIZE/2, 0,
                         x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE/2
@@ -928,6 +940,7 @@
                     ctx.fillRect(x + 3, y + 3, TILE_SIZE - 6, TILE_SIZE - 6);
                     
                     // Simbolo tesoro
+                    ctx.globalAlpha = 1;
                     ctx.fillStyle = '#fef3c7';
                     ctx.font = '18px Arial';
                     ctx.textAlign = 'center';
@@ -936,7 +949,9 @@
                     break;
                     
                 case CELL_TYPES.EXIT:
-                    // Uscita verde
+                    // Uscita verde con effetto luminoso
+                    ctx.shadowColor = '#4ade80';
+                    ctx.shadowBlur = 20;
                     const exitGradient = ctx.createRadialGradient(
                         x + TILE_SIZE/2, y + TILE_SIZE/2, 0,
                         x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE/2
@@ -947,6 +962,7 @@
                     ctx.fillRect(x + 1, y + 1, TILE_SIZE - 2, TILE_SIZE - 2);
                     
                     // Simbolo uscita
+                    ctx.globalAlpha = 1;
                     ctx.fillStyle = '#f0fdf4';
                     ctx.font = '20px Arial';
                     ctx.textAlign = 'center';
@@ -1133,6 +1149,7 @@
                     e.preventDefault();
                     movePlayer(1, 0);
                     break;
+                // SPAZIO ora mostra solo un suggerimento
                 case ' ':
                     e.preventDefault();
                     checkInteractions();
@@ -1151,13 +1168,21 @@
         
         // Inizializzazione del gioco
         function initGame() {
+            console.log('Inizializzazione gioco...');
             loadingScreen.style.display = 'none';
             gameState.initialized = true;
             generateMap();
             updateUI();
+            
+            // Debug: mostra posizione entità
+            console.log('Entità create:', entities);
+            console.log('Posizione giocatore:', {x: player.x, y: player.y});
+            
             gameLoop();
             
             addMessage('🎮 Gioco caricato! Usa WASD o le frecce per muoverti!', 'success');
+            addMessage('⚡ Avvicinati agli oggetti colorati per attivarli automaticamente!', 'info');
+            addMessage('🧮 Non serve premere SPAZIO - basta avvicinarsi!', 'info');
         }
         
         // Avvia il gioco quando tutto è pronto
